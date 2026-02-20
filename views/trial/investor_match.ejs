@@ -99,6 +99,20 @@
                                     <h6 class="fw-bold">Pitch</h6>
                                     <p class="text-muted"><%= match.startup.pitchDescription %></p>
 
+                                    <% if (match.pros) { %>
+                                        <div class="alert alert-success py-2 mb-2">
+                                            <small class="fw-bold"><i class="bi bi-graph-up-arrow"></i> Investment Upside:</small>
+                                            <p class="mb-0 small"><%= match.pros %></p>
+                                        </div>
+                                    <% } %>
+
+                                    <% if (match.cons) { %>
+                                        <div class="alert alert-warning py-2 mb-2">
+                                            <small class="fw-bold"><i class="bi bi-shield-exclamation"></i> Risks:</small>
+                                            <p class="mb-0 small"><%= match.cons %></p>
+                                        </div>
+                                    <% } %>
+
                                     <hr>
 
                                     <div class="row g-3">
