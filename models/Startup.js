@@ -24,9 +24,7 @@ const StartupSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    equityOffered: {
-      type: Number,
-    },
+    equityOffered: Number,
     location: {
       type: String,
       required: true,
@@ -35,16 +33,14 @@ const StartupSchema = new mongoose.Schema(
       type: String,
       enum: ["Pre-Revenue", "Revenue Generating", "Profitable"],
     },
-    teamSize: {
-      type: Number,
-    },
+    teamSize: Number,
     pitchDescription: {
       type: String,
       required: true,
     },
     tags: [String],
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Startup", StartupSchema);

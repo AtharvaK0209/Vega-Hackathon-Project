@@ -34,6 +34,20 @@
 
           <h3 class="text-center fw-bold mb-4">Welcome Back</h3>
 
+          <!-- FLASH MESSAGES -->
+          <% if (error && error.length > 0) { %>
+            <div class="alert alert-danger text-center">
+              <%= error %>
+            </div>
+          <% } %>
+
+          <% if (success && success.length > 0) { %>
+            <div class="alert alert-success text-center">
+              <%= success %>
+            </div>
+          <% } %>
+
+          <!-- LOGIN FORM -->
           <form action="/login" method="POST">
 
             <div class="mb-3">
@@ -77,11 +91,20 @@
 </section>
 
 
-<footer class="bg-dark text-white text-center p-3">
+<footer class="bg-dark text-white text-center p-3 mt-5">
   <p class="mb-0">
     © 2026 Nexus — Startup India Initiative Hackathon Prototype
   </p>
 </footer>
+
+
+<!-- AUTO DISMISS ALERT -->
+<script>
+  setTimeout(() => {
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => alert.remove());
+  }, 3000);
+</script>
 
 </body>
 </html>
