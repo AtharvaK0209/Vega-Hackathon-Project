@@ -2,6 +2,10 @@
 const express=require("express");
 const app=express();
 const mongoose=require("mongoose");
+const path=require("path");
+
+
+
 
 
 
@@ -14,7 +18,8 @@ async function main(){
 
 app.get("/",(req,res)=>{
     res.send("Hi i am root");
-})
+});
+
 
 app.listen(8080,(req,res)=>{
     console.log("Server is Listening");
