@@ -7,17 +7,25 @@ const InvestorSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    firmName: {
+    investorName: {
       type: String,
       required: true,
     },
-    preferredIndustries: [String],
-    preferredStages: [
-      {
-        type: String,
-        enum: ["Idea", "Pre-Seed", "Seed", "Early", "Growth"],
-      },
-    ],
+    firmName: { // This maps to "Organization / Firm" in your HTML
+      type: String,
+    },
+    email: { // Contact email for the investor/firm
+      type: String,
+    },
+    preferredIndustries: [String], // Maps to the "sectors" checkboxes
+    preferredStage: { // Changed from array to String to match your <select>
+      type: String,
+      enum: ["Idea", "Pre-Seed", "Seed", "Series A", "Growth Stage"],
+    },
+    investmentType: { // New field from your HTML
+      type: String,
+      enum: ["Equity", "Debt", "Convertible Note", "Any"],
+    },
     minInvestment: {
       type: Number,
       required: true,
@@ -29,17 +37,11 @@ const InvestorSchema = new mongoose.Schema(
     locationPreference: {
       type: String,
     },
-    riskTolerance: {
+    bio: { // Maps to "Additional Notes" in your HTML
       type: String,
-      enum: ["Low", "Medium", "High"],
     },
-    activeMentoring: {
-      type: Boolean,
-      default: false,
-    },
-    portfolioTags: [String],
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 module.exports = mongoose.model("Investor", InvestorSchema);

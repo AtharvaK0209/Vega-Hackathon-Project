@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="UTF-8">
@@ -8,112 +9,123 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/public/style.css">
 </head>
+
 <body>
 
-<form method="POST" action="/startup/profile">
+    <form method="POST" action="/startup/profile">
 
-<!-- BASIC INFO -->
-<div class="form-card mb-4">
-<h4 class="mb-3">Basic Information</h4>
+        <!-- BASIC INFO -->
+        <div class="form-card mb-4">
+            <h4 class="mb-3">Basic Information</h4>
 
-<div class="row g-3">
+            <div class="row g-3">
 
-<div class="col-md-6">
-<label class="form-label">Startup Name</label>
-<input type="text" name="startupName" class="form-control" required>
-</div>
+                <div class="col-md-6">
+                    <label class="form-label">Startup Name</label>
+                    <input type="text" name="startupName" class="form-control" value="<%= startup.startupName || '' %>"
+                        required>
+                </div>
 
-<div class="col-md-6">
-<label class="form-label">Location</label>
-<input type="text" name="location" class="form-control" required>
-</div>
+                <div class="col-md-6">
+                    <label class="form-label">Location</label>
+                    <input type="text" name="location" class="form-control" value="<%= startup.location || '' %>"
+                        required>
+                </div>
 
-</div>
-</div>
-
-
-<!-- STARTUP DETAILS -->
-<div class="form-card mb-4">
-<h4 class="mb-3">Startup Details</h4>
-
-<div class="row g-3">
-
-<div class="col-md-6">
-<label class="form-label">Industry</label>
-<select name="industry" class="form-select" required>
-<option value="">Select sector</option>
-<option>FinTech</option>
-<option>HealthTech</option>
-<option>EdTech</option>
-<option>AI / ML</option>
-<option>SaaS</option>
-</select>
-</div>
-
-<div class="col-md-6">
-<label class="form-label">Funding Stage</label>
-<select name="stage" class="form-select" required>
-<option>Idea</option>
-<option>Pre-Seed</option>
-<option>Seed</option>
-<option>Early</option>
-<option>Growth</option>
-</select>
-</div>
-
-<div class="col-12">
-<label class="form-label">Startup Description</label>
-<textarea name="pitchDescription" class="form-control" rows="4" required></textarea>
-</div>
-
-</div>
-</div>
+            </div>
+        </div>
 
 
-<!-- FUNDING INFO -->
-<div class="form-card mb-4">
-<h4 class="mb-3">Funding Information</h4>
+        <!-- STARTUP DETAILS -->
+        <div class="form-card mb-4">
+            <h4 class="mb-3">Startup Details</h4>
 
-<div class="row g-3">
+            <div class="row g-3">
 
-<div class="col-md-6">
-<label class="form-label">Funding Required (₹)</label>
-<input type="number" name="fundingRequired" class="form-control" required>
-</div>
+                <div class="col-md-6">
+                    <label class="form-label">Industry</label>
+                    <select name="industry" class="form-select" required>
+                        <option value="">Select sector</option>
+                        <% const industries=["FinTech", "HealthTech" , "EdTech" , "AI / ML" , "SaaS" ]; %>
+                            <% industries.forEach(ind=> { %>
+                                <option value="<%= ind %>" <%=(startup.industry===ind) ? 'selected' : '' %>><%= ind %>
+                                </option>
+                                <% }) %>
+                    </select>
+                </div>
 
-<div class="col-md-6">
-<label class="form-label">Equity Offered (%)</label>
-<input type="number" name="equityOffered" class="form-control">
-</div>
+                <div class="col-md-6">
+                    <label class="form-label">Funding Stage</label>
+                    <select name="stage" class="form-select" required>
+                        <% const stages=["Idea", "Pre-Seed" , "Seed" , "Early" , "Growth" ]; %>
+                            <% stages.forEach(stg=> { %>
+                                <option value="<%= stg %>" <%=(startup.stage===stg) ? 'selected' : '' %>><%= stg %>
+                                </option>
+                                <% }) %>
+                    </select>
+                </div>
 
-<div class="col-md-6">
-<label class="form-label">Team Size</label>
-<input type="number" name="teamSize" class="form-control">
-</div>
+                <div class="col-12">
+                    <label class="form-label">Startup Description</label>
+                    <textarea name="pitchDescription" class="form-control" rows="4"
+                        required><%= startup.pitchDescription || '' %></textarea>
+                </div>
 
-<div class="col-md-6">
-<label class="form-label">Revenue Status</label>
-<select name="revenueStatus" class="form-select">
-<option>Pre-Revenue</option>
-<option>Revenue Generating</option>
-<option>Profitable</option>
-</select>
-</div>
+            </div>
+        </div>
 
-<div class="col-12">
-<label class="form-label">Tags (comma separated)</label>
-<input type="text" name="tags" class="form-control">
-</div>
 
-</div>
-</div>
+        <!-- FUNDING INFO -->
+        <div class="form-card mb-4">
+            <h4 class="mb-3">Funding Information</h4>
 
-<div class="text-center">
-<button class="btn btn-primary btn-lg px-5">
-Save Profile
-</button>
-</div>
+            <div class="row g-3">
 
-</form>
+                <div class="col-md-6">
+                    <label class="form-label">Funding Required (₹)</label>
+                    <input type="number" name="fundingRequired" class="form-control"
+                        value="<%= startup.fundingRequired || '' %>" required>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Equity Offered (%)</label>
+                    <input type="number" name="equityOffered" class="form-control"
+                        value="<%= startup.equityOffered || '' %>">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Team Size</label>
+                    <input type="number" name="teamSize" class="form-control" value="<%= startup.teamSize || '' %>">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Revenue Status</label>
+                    <select name="revenueStatus" class="form-select">
+                        <% const statuses=["Pre-Revenue", "Revenue Generating" , "Profitable" ]; %>
+                            <% statuses.forEach(stat=> { %>
+                                <option value="<%= stat %>" <%=(startup.revenueStatus===stat) ? 'selected' : '' %>><%=
+                                        stat %>
+                                </option>
+                                <% }) %>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label">Tags (comma separated)</label>
+                    <input type="text" name="tags" class="form-control"
+                        value="<%= (startup.tags && startup.tags.length) ? startup.tags.join(',') : '' %>">
+                </div>
+
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button class="btn btn-primary btn-lg px-5">
+                <%= startup.startupName ? 'Update Profile' : 'Save Profile' %>
+            </button>
+        </div>
+
+    </form>
 </body>
+
 </html>

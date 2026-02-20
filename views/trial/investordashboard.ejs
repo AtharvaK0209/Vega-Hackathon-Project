@@ -15,14 +15,14 @@
 
 <div class="container py-5">
 
-    <h2 class="mb-4">Welcome, <%= investor.name %> 💼</h2>
+    <h2 class="mb-4">Welcome, <%= investor.investorName %> 💼</h2>
 
     <div class="row">
 
         <div class="col-md-6">
             <div class="card p-4 shadow-sm mb-4">
                 <h5>Your Investment Preferences</h5>
-                <p><strong>Preferred Industry:</strong> <%= investor.preferredIndustry %></p>
+                <p><strong>Preferred Industry:</strong> <%= investor.preferredIndustries %></p>
                 <p><strong>Preferred Stage:</strong> <%= investor.preferredStage %></p>
                 <p><strong>Max Investment:</strong> ₹<%= investor.maxInvestment %></p>
             </div>
@@ -31,14 +31,14 @@
         <div class="col-md-6">
             <div class="card p-4 shadow-sm mb-4">
                 <h5>Quick Actions</h5>
-                <a href="/investor/matches/<%= investor._id %>" 
+                <a href="/investor/matches" 
                    class="btn btn-primary w-100 mb-2">
                    View Matching Startups
                 </a>
 
-                <button class="btn btn-outline-secondary w-100">
+                <a href="/investor/profile/edit" class="btn btn-outline-secondary w-100">
                     Edit Preferences
-                </button>
+                </a>
             </div>
         </div>
 
