@@ -11,6 +11,7 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const flash = require("connect-flash");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const User = require("./models/User");
 const Startup = require("./models/Startup");
@@ -116,6 +117,95 @@ app.post("/login", passport.authenticate("local", {
     req.flash("success", "Welcome back!");
     redirectUserBasedOnStatus(req.user, res);
 });
+// ================= LOGOUT =================
+app.get("/logout", (req, res, next) => {
+    req.logout(function (err) {
+        if (err) return next(err);
+        req.flash("success", "Goodbye!");
+        res.redirect("/login");
+    });
+});
+
+//--------------------Gemini api logic
+
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+async function getAIBasedMatches(startup, investors) {
+    // 1. Initialize the model correctly
+    const model = genAI.getGenerativeModel({ 
+        model: "gemini-2.5-flash-lite",
+        // This forces the model to strictly output a JSON object
+        generationConfig: { responseMimeType: "application/json" } 
+    });
+
+    const prompt = `
+    Analyze this Startup: ${JSON.stringify(startup)}
+    Against these Investors: ${JSON.stringify(investors)}
+
+    Return a JSON array of objects. Each object must have:
+    "investorId" (string from the investor's _id),
+    "score" (number 0-100),
+    "reasoning" (brief string explaining the match).
+    
+    Format: [{"investorId": "...", "score": 85, "reasoning": "..."}]
+    `;
+
+    try {
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+        
+        // No need for regex cleaning if using responseMimeType: "application/json"
+        return JSON.parse(text);
+    } catch (error) {
+        console.error("Internal Gemini Parse Error:", error);
+        return []; // Return empty array so the app doesn't crash
+    }
+}
+
+async function getAIBasedMatchesForInvestor(investor, startups) {
+    try {
+        const model = genAI.getGenerativeModel({ 
+            model: "gemini-1.5-flash",
+            generationConfig: { responseMimeType: "application/json" }
+        });
+
+        const prompt = `
+        You are a professional Venture Capital analyst. 
+        Investor Profile: ${JSON.stringify(investor)}
+        Available Startups: ${JSON.stringify(startups)}
+
+        Evaluate how well each startup fits this investor's thesis based on:
+        1. Sector Match (Does the startup industry fit investor's preferred industries?)
+        2. Investment Size (Does fundingRequired fit within min/max investment range?)
+        3. Stage Fit (e.g., Seed, Series A)
+        4. Location and synergy.
+
+        Return ONLY a JSON array of objects:
+        [
+          {
+            "startupId": "string",
+            "score": number (0-100),
+            "reasoning": "A concise explanation of the investment fit"
+          }
+        ]
+        `;
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        return JSON.parse(response.text());
+        
+    } catch (error) {
+        console.error("Gemini API Error (Investor Side):", error);
+        // Fallback: If AI fails, return basic scores
+        return startups.map(s => ({
+            startupId: s._id.toString(),
+            score: 0,
+            reasoning: "AI Matcher currently unavailable."
+        }));
+    }
+}
 
 // ================= STARTUP FLOW =================
 
@@ -219,46 +309,120 @@ app.post("/investor/profile", isLoggedIn, async (req, res) => {
     }
 });
 
+// Investor Dashboard with AI Matching
 app.get("/investor/dashboard", isLoggedIn, async (req, res) => {
     if (req.user.role !== "investor") return res.redirect("/");
-    
-    const investor = await Investor.findOne({ userId: req.user._id });
-    if (!investor) return res.redirect("/investor/profile");
 
-    res.render("trial/investordashboard", { investor });
+    try {
+        const investor = await Investor.findOne({ userId: req.user._id });
+        
+        // If they haven't filled the profile yet, redirect them
+        if (!investor) return res.redirect("/investor/profile");
+
+        // Fetch all startups to show the investor
+        const allStartups = await Startup.find();
+
+        // Use our Gemini Matcher (Startup is the target now)
+        // We swap the logic: one investor vs many startups
+        const aiMatches = await getAIBasedMatchesForInvestor(investor, allStartups);
+
+        // Map the data for EJS
+        const curatedStartups = aiMatches.map(match => {
+            const startupData = allStartups.find(s => s._id.toString() === match.startupId);
+            return {
+                startup: startupData,
+                score: match.score,
+                reasoning: match.reasoning
+            };
+        });
+
+        curatedStartups.sort((a, b) => b.score - a.score);
+
+        res.render("trial/investordashboard", { investor, startups: curatedStartups });
+    } catch (err) {
+        console.error(err);
+        res.render("trial/investordashboard", { investor: {}, startups: [] });
+    }
 });
-
 // ================= MATCHING =================
 
 app.get("/matches/:startupId", isLoggedIn, async (req, res) => {
-    // Only startups should see matches for their startupId
-    const startup = await Startup.findById(req.params.startupId);
-    if (!startup || !startup.userId.equals(req.user._id)) {
-        req.flash("error", "Unauthorized access.");
-        return res.redirect("/");
+    try {
+        if (req.user.role !== "startup") return res.redirect("/");
+
+        const startup = await Startup.findById(req.params.startupId);
+        const investors = await Investor.find(); // Fetch all potential investors
+
+        if (!startup) {
+            req.flash("error", "Startup profile not found.");
+            return res.redirect("/startup/profile");
+        }
+
+        // Call Gemini for intelligent matching
+        const aiMatches = await getAIBasedMatches(startup, investors);
+
+        // Combine the AI scores with the Investor objects for the EJS view
+        const finalMatches = aiMatches.map(match => {
+            const investorData = investors.find(inv => inv._id.toString() === match.investorId);
+            return {
+                investor: investorData,
+                score: match.score,
+                reasoning: match.reasoning
+            };
+        });
+
+        // Sort by highest score
+        finalMatches.sort((a, b) => b.score - a.score);
+
+        res.render("trial/match", { startup, matches: finalMatches });
+
+    } catch (err) {
+        console.error("Gemini Error:", err);
+        req.flash("error", "AI Matching failed. Falling back to basic search.");
+        res.redirect("/startup/dashboard");
     }
+});
+// ================= INVESTOR MATCHES =================
 
-    const investors = await Investor.find();
-    const matches = investors.map(inv => {
-        let score = 0;
-        if (startup.industry === inv.preferredIndustry) score += 50;
-        if (startup.stage === inv.preferredStage) score += 25;
-        if (startup.fundingRequired <= inv.maxInvestment) score += 25;
-        return { investor: inv, score };
-    });
+app.get("/investor/matches/:investorId", isLoggedIn, async (req, res) => {
+    try {
+        // Authorization: Ensure the user is an investor and viewing their own matches
+        if (req.user.role !== "investor") return res.redirect("/");
 
-    matches.sort((a, b) => b.score - a.score);
-    res.render("trial/match", { startup, matches });
+        const investor = await Investor.findById(req.params.investorId);
+        const startups = await Startup.find(); // Fetch all startups in the database
+
+        if (!investor) {
+            req.flash("error", "Investor profile not found.");
+            return res.redirect("/investor/profile");
+        }
+
+        // Call Gemini for intelligent matching (swapping perspective)
+        const aiMatches = await getAIBasedMatchesForInvestor(investor, startups);
+
+        // Map AI scores to the Startup objects
+        const finalMatches = aiMatches.map(match => {
+            const startupData = startups.find(s => s._id.toString() === match.startupId);
+            return {
+                startup: startupData,
+                score: match.score,
+                reasoning: match.reasoning
+            };
+        });
+
+        // Sort by highest score
+        finalMatches.sort((a, b) => b.score - a.score);
+
+        // Render a match page specifically designed for investors
+        res.render("trial/investor_match", { investor, matches: finalMatches });
+
+    } catch (err) {
+        console.error("Gemini Investor Match Error:", err);
+        req.flash("error", "AI Matching failed. Please try again later.");
+        res.redirect("/investor/dashboard");
+    }
 });
 
-// ================= LOGOUT =================
-app.get("/logout", (req, res, next) => {
-    req.logout(function (err) {
-        if (err) return next(err);
-        req.flash("success", "Goodbye!");
-        res.redirect("/login");
-    });
-});
 
 app.listen(8080, () => {
     console.log("Server is Listening on port 8080");
