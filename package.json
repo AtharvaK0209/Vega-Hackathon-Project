@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "ejs-mate": "^4.0.0",
     "express": "^5.2.1",
     "mongoose": "^6.13.8",
     "passport": "^0.7.0",
