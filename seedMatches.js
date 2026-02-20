@@ -1,11 +1,16 @@
 const mongoose = require("mongoose");
+if (process.env.NODE_ENV !== "production") {
+    require("dotenv").config();
+}
 const Startup = require("./models/Startup");
 const Investor = require("./models/Investor");
 const Match = require("./models/Match");
 const User = require("./models/User"); // Need User for references
 
+const dbUrl = process.env.DB_URL || "mongodb://127.0.0.1:27017/nexus";
+
 // Connect to MongoDB
-mongoose.connect("mongodb://127.0.0.1:27017/nexus")
+mongoose.connect(dbUrl)
     .then(() => console.log("Connected to MongoDB for Seeding"))
     .catch(err => console.error("Could not connect to MongoDB", err));
 
