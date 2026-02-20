@@ -16,6 +16,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const User = require("./models/User");
 const Startup = require("./models/Startup");
 const Investor = require("./models/Investor");
+const ConnectionRequest = require("./models/ConnectionRequest");
 
 // ================= BASIC CONFIG =================
 app.set("view engine", "ejs");
@@ -166,7 +167,12 @@ async function getAIBasedMatches(startup, investors) {
         return JSON.parse(text);
     } catch (error) {
         console.error("Internal Gemini Parse Error:", error);
-        return []; // Return empty array so the app doesn't crash
+        // Fallback: If AI fails, return basic scores
+        return investors.map(i => ({
+            investorId: i._id.toString(),
+            score: 0,
+            reasoning: "AI Matcher currently unavailable."
+        }));
     }
 }
 
@@ -349,7 +355,7 @@ app.get("/investor/dashboard", isLoggedIn, async (req, res) => {
         if (!investor) return res.redirect("/investor/profile");
 
         // Fetch all startups to show the investor
-        const allStartups = await Startup.find();
+        const allStartups = await Startup.find().populate('userId', 'email');
 
         // Use our Gemini Matcher (Startup is the target now)
         // We swap the logic: one investor vs many startups
@@ -452,6 +458,211 @@ app.get("/investor/matches/:investorId", isLoggedIn, async (req, res) => {
     }
 });
 
+// ================= CONNECTION REQUESTS =================
+
+// Send Connection Request
+app.post("/connect", isLoggedIn, async (req, res) => {
+    try {
+        const { receiverId, message } = req.body;
+        const senderId = req.user._id;
+        const senderRole = req.user.role;
+
+        // Prevent self-connection (shouldn't happen via UI but good to have)
+        if (senderId.equals(receiverId)) {
+            req.flash("error", "You cannot connect with yourself.");
+            return res.redirect(req.get('Referer') || '/');
+        }
+
+        // Check if request already exists
+        const existingRequest = await ConnectionRequest.findOne({
+            senderId,
+            receiverId,
+            status: "pending"
+        });
+
+        if (existingRequest) {
+            req.flash("error", "Connection request already pending.");
+            return res.redirect(req.get('Referer') || '/');
+        }
+
+        const newRequest = new ConnectionRequest({
+            senderId,
+            receiverId,
+            senderRole,
+            message,
+            status: "pending"
+        });
+
+        await newRequest.save();
+        req.flash("success", "Connection request sent!");
+        res.redirect(req.get('Referer') || '/');
+
+    } catch (err) {
+        console.error("Connection Error:", err);
+        req.flash("error", "Failed to send connection request.");
+        res.redirect(req.get('Referer') || '/');
+    }
+});
+
+// View Connections (Incoming & Outgoing)
+app.get("/connections", isLoggedIn, async (req, res) => {
+    try {
+        // Find incoming requests (where I am the receiver)
+        const incomingRequests = await ConnectionRequest.find({
+            receiverId: req.user._id,
+            status: "pending"
+        }).populate("senderId"); // Get user details
+
+        const enrichedIncoming = await Promise.all(incomingRequests.map(async (requestItem) => {
+            if (!requestItem.senderId) return null; // Skip if user deleted
+
+            let profile;
+            if (requestItem.senderRole === "startup") {
+                profile = await Startup.findOne({ userId: requestItem.senderId._id });
+            } else {
+                profile = await Investor.findOne({ userId: requestItem.senderId._id });
+            }
+            return {
+                request: requestItem,
+                profile: profile
+            };
+        }));
+
+        // Filter out nulls
+        const validIncoming = enrichedIncoming.filter(item => item !== null);
+
+        // Find outgoing requests (where I am the sender)
+        const outgoingRequests = await ConnectionRequest.find({
+            senderId: req.user._id,
+            status: "pending"
+        }).populate("receiverId");
+
+        const enrichedOutgoing = await Promise.all(outgoingRequests.map(async (requestItem) => {
+            if (!requestItem.receiverId) return null; // Skip if user deleted
+
+            let profile;
+            if (requestItem.senderRole === "startup") {
+                // Sender (me) is startup -> Receiver is Investor
+                profile = await Investor.findOne({ userId: requestItem.receiverId._id });
+            } else {
+                // Sender (me) is investor -> Receiver is Startup
+                profile = await Startup.findOne({ userId: requestItem.receiverId._id });
+            }
+            return {
+                request: requestItem,
+                profile: profile
+            };
+        }));
+
+        // Filter out nulls
+        const validOutgoing = enrichedOutgoing.filter(item => item !== null);
+
+        // Find my accepted connections
+        const connections = await ConnectionRequest.find({
+            $or: [
+                { senderId: req.user._id, status: "accepted" },
+                { receiverId: req.user._id, status: "accepted" }
+            ]
+        }).populate("senderId receiverId");
+
+        const enrichedConnections = await Promise.all(connections.map(async (conn) => {
+            if (!conn.senderId || !conn.receiverId) return null; // Safety check
+
+            const isMeSender = conn.senderId._id.equals(req.user._id);
+            const otherUser = isMeSender ? conn.receiverId : conn.senderId;
+            
+            let profile;
+            if (req.user.role === 'startup') {
+                // I am startup -> Other is investor
+                profile = await Investor.findOne({ userId: otherUser._id });
+            } else {
+                // I am investor -> Other is startup
+                profile = await Startup.findOne({ userId: otherUser._id });
+            }
+
+            return {
+                connection: conn,
+                otherUser: otherUser,
+                profile: profile
+            };
+        }));
+
+        // Filter out nulls
+        const validConnections = enrichedConnections.filter(item => item !== null);
+
+        res.render("trial/connections", { 
+            incoming: validIncoming, 
+            outgoing: validOutgoing,
+            connections: validConnections 
+        });
+
+    } catch (err) {
+        console.error("View Connections Error:", err);
+        req.flash("error", "Could not load connections.");
+        res.redirect("/");
+    }
+});
+
+// Cancel Connection Request
+app.post("/connect/:id/cancel", isLoggedIn, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const request = await ConnectionRequest.findById(id);
+        
+        if (!request) {
+            req.flash("error", "Request not found.");
+            return res.redirect("/connections");
+        }
+
+        // Verify I am the sender
+        if (!request.senderId.equals(req.user._id)) {
+            req.flash("error", "Unauthorized.");
+            return res.redirect("/connections");
+        }
+
+        await ConnectionRequest.findByIdAndDelete(id);
+        req.flash("success", "Request cancelled.");
+        res.redirect("/connections");
+
+    } catch (err) {
+        console.error("Cancel Error:", err);
+        req.flash("error", "Could not cancel request.");
+        res.redirect("/connections");
+    }
+});
+
+// Accept/Reject Connection Request
+app.post("/connect/:id/:action", isLoggedIn, async (req, res) => {
+    try {
+        const { id, action } = req.params;
+        if (!["accept", "reject"].includes(action)) {
+            return res.redirect("/connections");
+        }
+
+        const request = await ConnectionRequest.findById(id);
+        if (!request) {
+            req.flash("error", "Request not found.");
+            return res.redirect("/connections");
+        }
+
+        // Verify I am the receiver
+        if (!request.receiverId.equals(req.user._id)) {
+            req.flash("error", "Unauthorized.");
+            return res.redirect("/connections");
+        }
+
+        request.status = action === "accept" ? "accepted" : "rejected";
+        await request.save();
+
+        req.flash("success", `Connection ${action}ed!`);
+        res.redirect("/connections");
+
+    } catch (err) {
+        console.error("Action Error:", err);
+        req.flash("error", "Action failed.");
+        res.redirect("/connections");
+    }
+});
 
 app.listen(8080, () => {
   console.log("Server is Listening on port 8080");

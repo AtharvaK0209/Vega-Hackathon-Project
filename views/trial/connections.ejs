@@ -3,144 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connections - Nexus</title>
+    <title>My Connections | Nexus</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/public/style.css">
-<link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
- 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
-<body>
-    
-<!-- NAVBAR -->
-<nav class="navbar bg-white shadow-sm">
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark mb-4">
   <div class="container">
-    <a class="navbar-brand fw-bold text-primary">Nexus</a>
+    <span class="navbar-brand">Nexus Connections</span>
+    <a href="/<%= currentUser.role %>/dashboard" class="btn btn-light btn-sm">Dashboard</a>
   </div>
 </nav>
 
+<div class="container py-4">
 
-<!-- HEADER -->
-<section class="py-4 bg-light">
-<div class="container">
-<h3 class="fw-bold">Connection Requests</h3>
-<p class="text-muted">Manage your startup-investor interactions</p>
+    <% if(success && success.length > 0){ %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <%= success %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <% } %>
+    
+    <% if(error && error.length > 0){ %>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <%= error %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <% } %>
+
+    <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="incoming-tab" data-bs-toggle="tab" data-bs-target="#incoming" type="button" role="tab">
+                Incoming Requests 
+                <% if (incoming.length > 0) { %>
+                    <span class="badge bg-danger rounded-pill"><%= incoming.length %></span>
+                <% } %>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="outgoing-tab" data-bs-toggle="tab" data-bs-target="#outgoing" type="button" role="tab">
+                Sent Requests
+                <% if (outgoing.length > 0) { %>
+                    <span class="badge bg-secondary rounded-pill"><%= outgoing.length %></span>
+                <% } %>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="connections-tab" data-bs-toggle="tab" data-bs-target="#connections" type="button" role="tab">
+                My Network
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+        
+        <!-- INCOMING REQUESTS -->
+        <div class="tab-pane fade show active" id="incoming" role="tabpanel">
+            <% if (incoming.length === 0) { %>
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-inbox display-4"></i>
+                    <p class="mt-2">No pending connection requests.</p>
+                </div>
+            <% } else { %>
+                <div class="row">
+                    <% incoming.forEach(item => { %>
+                        <div class="col-md-6 mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                            <i class="bi bi-person-fill h4 mb-0 text-secondary"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-0 fw-bold">
+                                                <%= item.profile ? (item.profile.startupName || item.profile.investorName) : "Unknown User" %>
+                                            </h5>
+                                            <small class="text-muted text-uppercase"><%= item.request.senderRole %></small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-light p-3 rounded mb-3">
+                                        <small class="text-muted d-block mb-1">Message:</small>
+                                        <p class="mb-0 fst-italic">"<%= item.request.message || 'I would like to connect.' %>"</p>
+                                    </div>
+
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-outline-primary flex-grow-1" data-bs-toggle="modal" data-bs-target="#profileModal<%= item.request._id %>">
+                                            View Profile
+                                        </button>
+                                        <form action="/connect/<%= item.request._id %>/accept" method="POST" class="flex-grow-1">
+                                            <button class="btn btn-success w-100">Accept</button>
+                                        </form>
+                                        <form action="/connect/<%= item.request._id %>/reject" method="POST" class="flex-grow-1">
+                                            <button class="btn btn-outline-danger w-100">Reject</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Profile Modal (Incoming) -->
+                        <div class="modal fade" id="profileModal<%= item.request._id %>" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Sender Profile</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <% if (item.profile) { %>
+                                            <% if (item.request.senderRole === 'startup') { %>
+                                                <h6><%= item.profile.startupName %></h6>
+                                                <p class="text-muted"><%= item.profile.pitchDescription %></p>
+                                                <ul class="list-unstyled">
+                                                    <li><strong>Stage:</strong> <%= item.profile.stage %></li>
+                                                    <li><strong>Industry:</strong> <%= item.profile.industry %></li>
+                                                    <li><strong>Location:</strong> <%= item.profile.location %></li>
+                                                </ul>
+                                            <% } else { %>
+                                                <h6><%= item.profile.investorName %></h6>
+                                                <p class="text-muted"><%= item.profile.bio %></p>
+                                                <ul class="list-unstyled">
+                                                    <li><strong>Firm:</strong> <%= item.profile.firmName %></li>
+                                                    <li><strong>Range:</strong> ₹<%= item.profile.minInvestment %> - ₹<%= item.profile.maxInvestment %></li>
+                                                </ul>
+                                            <% } %>
+                                        <% } else { %>
+                                            <p>Profile details unavailable.</p>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    <% }) %>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- SENT REQUESTS -->
+        <div class="tab-pane fade" id="outgoing" role="tabpanel">
+            <% if (outgoing.length === 0) { %>
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-send display-4"></i>
+                    <p class="mt-2">No sent requests pending.</p>
+                </div>
+            <% } else { %>
+                <div class="row">
+                    <% outgoing.forEach(item => { %>
+                        <div class="col-md-6 mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">
+                                            <i class="bi bi-person h4 mb-0 text-secondary"></i>
+                                        </div>
+                                        <div>
+                                            <h5 class="mb-0 fw-bold">
+                                                To: <%= item.profile ? (item.profile.startupName || item.profile.investorName) : "Unknown User" %>
+                                            </h5>
+                                            <span class="badge bg-warning text-dark">Pending</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-light p-3 rounded mb-3">
+                                        <small class="text-muted d-block mb-1">Your Message:</small>
+                                        <p class="mb-0 fst-italic">"<%= item.request.message %>"</p>
+                                    </div>
+
+                                    <div class="d-flex gap-2">
+                                        <form action="/connect/<%= item.request._id %>/cancel" method="POST" class="w-100">
+                                            <button class="btn btn-outline-secondary w-100">Cancel Request</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- MY NETWORK -->
+        <div class="tab-pane fade" id="connections" role="tabpanel">
+            <% if (connections.length === 0) { %>
+                <div class="text-center py-5 text-muted">
+                    <i class="bi bi-people display-4"></i>
+                    <p class="mt-2">You haven't connected with anyone yet.</p>
+                </div>
+            <% } else { %>
+                <div class="row">
+                    <% connections.forEach(conn => { %>
+                        <div class="col-md-4 mb-3">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body text-center">
+                                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                        <i class="bi bi-person-check-fill h2 mb-0 text-success"></i>
+                                    </div>
+                                    <h5 class="fw-bold">
+                                        <%= conn.profile ? (conn.profile.startupName || conn.profile.investorName) : "Unknown" %>
+                                    </h5>
+                                    <p class="text-muted small mb-3">
+                                        <%= conn.profile ? (conn.profile.industry || conn.profile.firmName) : "" %>
+                                    </p>
+                                    
+                                    <div class="d-grid gap-2">
+                                        <a href="mailto:<%= conn.profile ? (conn.profile.email || conn.otherUser.email) : '' %>" class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-envelope"></i> Send Email
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="card-footer bg-white text-muted small text-center">
+                                    Connected <%= new Date(conn.connection.updatedAt).toLocaleDateString() %>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } %>
+        </div>
+
+    </div>
+
 </div>
-</section>
-
-
-<!-- TABS -->
-<section class="py-5">
-<div class="container">
-
-<ul class="nav nav-tabs mb-4" id="connectionTabs">
-  <li class="nav-item">
-    <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#received">
-      Received Requests
-    </button>
-  </li>
-
-  <li class="nav-item">
-    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#sent">
-      Sent Requests
-    </button>
-  </li>
-</ul>
-
-
-<div class="tab-content">
-
-<!-- RECEIVED -->
-<div class="tab-pane fade show active" id="received">
-
-<div class="row g-4">
-
-<div class="col-md-6 d-flex justify-content-center">
-<div class="connection-card">
-
-<h5 class="fw-bold">FinAI Technologies</h5>
-<p class="text-muted small">
-Interested in connecting regarding Seed investment opportunity.
-</p>
-
-<span class="status pending">Pending</span>
-
-<div class="mt-3">
-<button class="btn btn-success btn-sm me-2">Accept</button>
-<button class="btn btn-outline-danger btn-sm">Reject</button>
-</div>
-
-</div>
-</div>
-
-
-<div class="col-md-6 d-flex justify-content-center">
-<div class="connection-card">
-
-<h5 class="fw-bold">HealthBridge</h5>
-<p class="text-muted small">
-Requested discussion about healthcare expansion funding.
-</p>
-
-<span class="status accepted">Accepted</span>
-
-</div>
-</div>
-
-</div>
-</div>
-
-
-<!-- SENT -->
-<div class="tab-pane fade" id="sent">
-
-<div class="row g-4">
-
-<div class="col-md-6 d-flex justify-content-center">
-<div class="connection-card">
-
-<h5 class="fw-bold">EduNext</h5>
-<p class="text-muted small">
-Connection request sent to startup founder.
-</p>
-
-<span class="status pending">Pending Approval</span>
-
-</div>
-</div>
-
-</div>
-
-</div>
-
-</div>
-</div>
-</section>
-
-
-<!-- FOOTER -->
-<footer class="bg-dark text-white mt-5">
-<div class="container text-center py-4">
-
-<h5 class="fw-bold">Nexus</h5>
-<p class="text-secondary">Intelligent Startup–Investor Matchmaking Platform</p>
-
-<div class="social-icons my-3">
-<a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
-<a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
-<a href="#" class="social-link"><i class="bi bi-youtube"></i></a>
-<a href="#" class="social-link"><i class="bi bi-twitter-x"></i></a>
-<a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
-</div>
-
-<small class="text-secondary">
-© 2026 Nexus — Startup India Initiative Hackathon Prototype | All rights reserved.
-</small>
-
-</div>
-</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>
