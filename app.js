@@ -70,6 +70,45 @@ app.get("/login",(req,res)=>{
 app.post("/login",passport.authenticate("local",{failureRedirect:"/login"}), (req,res)=>{
     res.send("Hello user");
 })
+//matchmaking
+app.get("/matches/:startupId", async (req, res) => {
+
+    const startup = await Startup.findById(req.params.startupId);
+    const investors = await Investor.find();
+
+    const matches = investors.map(inv => {
+
+        let score = 0;
+
+        if (startup.industry === inv.preferredIndustry) score += 50;
+        if (startup.stage === "Seed" && inv.investmentRange.includes("Seed")) score += 25;
+        if (startup.fundingRequired < 10000000) score += 25;
+
+        return {
+            investor: inv,
+            score
+        };
+    });
+
+    matches.sort((a, b) => b.score - a.score);
+
+    res.render("matches", { startup, matches });
+});
+
+app.get("/startup/dashboard/:id", async (req, res) => {
+
+    const startup = await Startup.findById(req.params.id);
+
+    res.render("startupDashboard", { startup });
+});
+
+
+app.get("/investor/dashboard/:id", async (req, res) => {
+
+    const investor = await Investor.findById(req.params.id);
+
+    res.render("investorDashboard", { investor });
+});
 
 
 app.listen(8080,(req,res)=>{
