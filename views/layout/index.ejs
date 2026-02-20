@@ -6,9 +6,318 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nexus - Home</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/public/style.css">
+    <link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"> 
 </head>
+<style>
+
+/* ===============================
+   STRIPE + LINEAR AI DESIGN SYSTEM
+================================ */
+
+body{
+    font-family:'Inter',sans-serif;
+    background:
+        radial-gradient(circle at 10% 20%, #dbeafe 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, #dcfce7 0%, transparent 40%),
+        #f8fafc;
+    color:#0f172a;
+    overflow-x:hidden;
+}
+
+/* ===============================
+   GLASS NAVBAR
+================================ */
+
+.navbar{
+    background:rgba(255,255,255,0.75)!important;
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(0,0,0,0.05);
+}
+
+.navbar-brand{
+    font-weight:700;
+    background:linear-gradient(90deg,#2563EB,#6366F1,#22C55E);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* ===============================
+   HERO SECTION
+================================ */
+
+.hero{
+    min-height:90vh;
+    position:relative;
+}
+
+/* AI glow layer */
+.hero::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:
+        radial-gradient(circle at 50% 0%,
+        rgba(99,102,241,0.25),
+        transparent 60%);
+    pointer-events:none;
+}
+
+/* TEXT ANIMATION */
+
+.hero h1{
+    font-weight:700;
+    letter-spacing:-1px;
+    animation:fadeUp 1s ease forwards;
+}
+
+.hero p{
+    animation:fadeUp 1.2s ease forwards;
+}
+
+.hero button{
+    animation:fadeUp 1.4s ease forwards;
+}
+
+@keyframes fadeUp{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* FLOATING HERO IMAGE */
+
+.hero img{
+    animation:floatAI 5s ease-in-out infinite;
+}
+
+@keyframes floatAI{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-14px);}
+}
+
+/* ===============================
+   BUTTON SYSTEM
+================================ */
+
+.btn{
+    border-radius:14px;
+    font-weight:500;
+    transition:all .25s ease;
+}
+
+.btn-primary{
+    background:linear-gradient(135deg,#2563EB,#6366F1);
+    border:none;
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 15px 30px rgba(99,102,241,.35);
+}
+
+/* SHIMMER EFFECT */
+
+.btn-primary::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-100%;
+    width:100%;
+    height:100%;
+    background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(255,255,255,.6),
+        transparent
+    );
+    transition:.6s;
+}
+
+.btn-primary:hover::after{
+    left:100%;
+}
+
+/* ===============================
+   FEATURE CARDS (LINEAR STYLE)
+================================ */
+
+.card{
+    border-radius:18px;
+    background:rgba(255,255,255,0.8);
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(0,0,0,0.05);
+    transition:all .35s ease;
+    overflow:hidden;
+}
+
+.card:hover{
+    transform:translateY(-12px);
+    box-shadow:
+        0 25px 50px rgba(0,0,0,0.12),
+        0 0 0 1px rgba(99,102,241,0.2);
+}
+
+/* LIGHT SWEEP */
+
+.card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(99,102,241,0.15),
+        transparent
+    );
+    opacity:0;
+    transition:.4s;
+}
+
+.card:hover::before{
+    opacity:1;
+}
+
+/* ===============================
+   SECTION SPACING
+================================ */
+
+section{
+    padding:90px 0;
+}
+
+/* ===============================
+   HEADINGS
+================================ */
+
+h2{
+    font-weight:700;
+    letter-spacing:-0.5px;
+}
+
+/* ===============================
+   SOCIAL ICONS
+================================ */
+
+.social-icons{
+    display:flex;
+    justify-content:center;
+    gap:20px;
+}
+
+.social-link{
+    font-size:22px;
+    color:#94a3b8;
+    transition:.3s;
+}
+
+.social-link:hover{
+    color:#6366F1;
+    transform:translateY(-6px) scale(1.2);
+}
+
+/* ===============================
+   FOOTER
+================================ */
+
+footer{
+    background:#020617;
+}
+
+/* ===============================
+   PAGE LOAD ANIMATION
+================================ */
+
+body{
+    animation:pageEnter .8s ease;
+}
+
+@keyframes pageEnter{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ==========================
+   AI GRID BACKGROUND
+========================== */
+
+.ai-grid{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background-image:
+        linear-gradient(rgba(99,102,241,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,0.08) 1px, transparent 1px);
+    background-size:60px 60px;
+    animation:gridMove 18s linear infinite;
+}
+
+@keyframes gridMove{
+    from{transform:translateY(0);}
+    to{transform:translateY(60px);}
+}
+
+/* ==========================
+   PARALLAX SECTIONS
+========================== */
+
+.hero{
+    transform:translateZ(0);
+    will-change:transform;
+}
+
+.parallax{
+    transition:transform 0.1s linear;
+}
+
+/* ==========================
+   AI SCANNER EFFECT
+========================== */
+
+.card{
+    position:relative;
+    overflow:hidden;
+}
+
+.card::after{
+    content:"";
+    position:absolute;
+    top:-100%;
+    left:-50%;
+    width:200%;
+    height:60%;
+    background:linear-gradient(
+        120deg,
+        transparent,
+        rgba(99,102,241,0.35),
+        transparent
+    );
+    transform:rotate(25deg);
+    animation:scanBeam 6s infinite;
+}
+
+@keyframes scanBeam{
+    0%{top:-120%;}
+    50%{top:120%;}
+    100%{top:120%;}
+}
+
+</style>
 <body>
+  <div class="ai-grid"></div>
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
   <div class="container">
     <a class="navbar-brand fw-bold text-primary" href="#">
@@ -23,6 +332,13 @@
 </nav>
 
   <section class="hero d-flex align-items-center">
+    <div class="money-flow">
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
   <div class="container">
     <div class="row align-items-center">
 
@@ -48,8 +364,8 @@
       </div>
 
       <div class="col-md-6 text-center">
-        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-             class="img-fluid" width="350">
+        <img src="https://static.vecteezy.com/system/resources/previews/006/946/002/non_2x/angel-investor-illustration-concept-showing-an-investor-giving-money-for-promising-startup-founder-vector.jpg"
+             class="img-fluid" height="400" width="600">
       </div>
 
     </div>
@@ -63,20 +379,29 @@
     <h2 class="fw-bold mb-5">How It Works</h2>
 
     <div class="row">
+        
+      <div class="col-md-4 d-flex">
+        <div class="card p-3 shadow-sm">
 
-      <div class="col-md-4">
         <h4>👤 Create Profile</h4>
         <p class="text-muted">Startups and investors build structured profiles.</p>
       </div>
+    </div>
 
-      <div class="col-md-4">
+
+      <div class="col-md-4 d-flex">
+        <div class="card p-3 shadow-sm">
         <h4>🤝 Smart Matching</h4>
         <p class="text-muted">System calculates alignment score automatically.</p>
       </div>
+      </div>
 
-      <div class="col-md-4">
+      
+      <div class="col-md-4 d-flex">
+        <div class="card p-3 shadow-sm">
         <h4>🔗 Connect</h4>
         <p class="text-muted">Discover and connect with relevant partners.</p>
+      </div>
       </div>
 
     </div>
@@ -90,28 +415,28 @@
 
     <div class="row">
 
-      <div class="col-md-3">
+      <div class="col-md-3 d-flex">
         <div class="card p-3 shadow-sm">
           <h5>Match Score</h5>
           <p class="text-muted">Data-driven compatibility ranking.</p>
         </div>
       </div>
 
-      <div class="col-md-3">
+      <div class="col-md-3 d-flex">
         <div class="card p-3 shadow-sm">
           <h5>Startup Profiles</h5>
           <p class="text-muted">Structured pitch information.</p>
         </div>
       </div>
 
-      <div class="col-md-3">
+      <div class="col-md-3 d-flex">
         <div class="card p-3 shadow-sm">
           <h5>Investor Preferences</h5>
           <p class="text-muted">Define investment interests easily.</p>
         </div>
       </div>
 
-      <div class="col-md-3">
+      <div class="col-md-3 d-flex">
         <div class="card p-3 shadow-sm">
           <h5>Ranked Matches</h5>
           <p class="text-muted">See best opportunities first quickly.</p>
@@ -163,6 +488,13 @@
   </div>
 </footer>
 
-
+<script>
+window.addEventListener("scroll", () => {
+    const scroll = window.pageYOffset;
+    document.querySelectorAll(".parallax").forEach(el=>{
+        el.style.transform = `translateY(${scroll * -0.08}px)`;
+    });
+});
+</script>
 </body>
 </html>
