@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/public/style.css">
+    <link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+</head>
+<body>
+    <!-- NAVBAR -->
+<nav class="navbar bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-primary">Nexus</a>
+
+    <div>
+      <span class="me-3 fw-semibold">Welcome, Investor</span>
+      <button class="btn btn-outline-danger btn-sm">Logout</button>
+    </div>
+  </div>
+</nav>
+
+
+<!-- HEADER -->
+<section class="py-4 bg-light">
+<div class="container">
+
+<h3 class="fw-bold">Recommended Startup Matches</h3>
+<p class="text-muted">Based on your investment preferences</p>
+
+<!-- FILTERS -->
+<div class="row g-3 mt-2">
+
+<div class="col-md-3">
+<select class="form-select">
+<option>All Sectors</option>
+<option>FinTech</option>
+<option>HealthTech</option>
+<option>AI</option>
+</select>
+</div>
+
+<div class="col-md-3">
+<select class="form-select">
+<option>All Stages</option>
+<option>Seed</option>
+<option>Series A</option>
+</select>
+</div>
+
+<div class="col-md-3">
+<select class="form-select">
+<option>Match Score</option>
+<option>High → Low</option>
+<option>Low → High</option>
+</select>
+</div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- MATCH CARDS -->
+<section class="py-5">
+<div class="container">
+
+<div class="row g-4">
+
+<!-- CARD -->
+<div class="col-lg-4 col-md-6 d-flex justify-content-center">
+
+<div class="match-card">
+
+<span class="match-score high">92% Match</span>
+
+<h5 class="fw-bold mt-3">FinAI Technologies</h5>
+
+<p class="text-muted small">
+AI-powered financial analytics platform helping SMEs manage risk.
+</p>
+
+<div class="match-info">
+<p><strong>Sector:</strong> FinTech</p>
+<p><strong>Stage:</strong> Seed</p>
+<p><strong>Funding:</strong> ₹50L</p>
+</div>
+
+<button class="btn btn-primary w-100 mt-2">
+Connect
+</button>
+
+</div>
+</div>
+
+
+<!-- CARD -->
+<div class="col-lg-4 col-md-6 d-flex justify-content-center">
+
+<div class="match-card">
+
+<span class="match-score medium">74% Match</span>
+
+<h5 class="fw-bold mt-3">HealthBridge</h5>
+
+<p class="text-muted small">
+Digital healthcare ecosystem connecting patients and clinics.
+</p>
+
+<div class="match-info">
+<p><strong>Sector:</strong> HealthTech</p>
+<p><strong>Stage:</strong> Pre-Seed</p>
+<p><strong>Funding:</strong> ₹30L</p>
+</div>
+
+<button class="btn btn-primary w-100 mt-2">
+Connect
+</button>
+
+</div>
+</div>
+
+
+<!-- CARD -->
+<div class="col-lg-4 col-md-6 d-flex justify-content-center">
+
+<div class="match-card">
+
+<span class="match-score low">58% Match</span>
+
+<h5 class="fw-bold mt-3">EduNext</h5>
+
+<p class="text-muted small">
+Adaptive learning platform using AI personalization.
+</p>
+
+<div class="match-info">
+<p><strong>Sector:</strong> EdTech</p>
+<p><strong>Stage:</strong> Idea</p>
+<p><strong>Funding:</strong> ₹15L</p>
+</div>
+
+<button class="btn btn-primary w-100 mt-2">
+Connect
+</button>
+
+</div>
+</div>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- FOOTER -->
+<footer class="bg-dark text-white mt-5">
+  <div class="container text-center py-4">
+
+    <h5 class="fw-bold">Nexus</h5>
+    <p class="text-secondary">Intelligent Startup–Investor Matchmaking Platform</p>
+
+    <div class="social-icons my-3">
+      <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+      <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+      <a href="#" class="social-link"><i class="bi bi-youtube"></i></a>
+      <a href="#" class="social-link"><i class="bi bi-twitter-x"></i></a>
+      <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
+    </div>
+
+    <small class="text-secondary">
+      © 2026 Nexus — Startup India Initiative Hackathon Prototype | All rights reserved.
+    </small>
+
+  </div>
+</footer>
+</body>
+</html>
