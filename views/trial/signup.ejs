@@ -11,7 +11,174 @@
     <!-- Your CSS -->
     <link rel="stylesheet" href="/style.css">
 </head>
+<style>
 
+/* ===============================
+   GLOBAL STYLE
+================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body{
+    font-family:'Inter',sans-serif;
+
+    background:
+        linear-gradient(rgba(15,23,42,.55), rgba(15,23,42,.55)),
+        url('/images/login-bg.jpg');
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    
+    background: linear-gradient(90deg,#2563EB,#6366F1,#22C55E);
+}
+
+/* ===============================
+   NAVBAR
+================================ */
+
+.navbar{
+    background:rgba(255,255,255,.85)!important;
+    backdrop-filter:blur(12px);
+}
+
+.navbar-brand{
+    font-weight:700;
+    background:linear-gradient(90deg,#2563EB,#6366F1,#22C55E);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* ===============================
+   HERO SECTION
+================================ */
+
+.hero{
+    flex:1;
+    min-height:calc(100vh - 120px);
+}
+
+/* ===============================
+   SIGNUP CARD
+================================ */
+
+.card{
+    border:none;
+    border-radius:18px;
+    background:rgba(255,255,255,.92);
+    backdrop-filter:blur(18px);
+    transition:.35s ease;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 25px 60px rgba(0,0,0,.2);
+}
+
+/* ===============================
+   INPUTS
+================================ */
+
+.form-control{
+    border-radius:12px;
+    padding:12px;
+}
+
+.form-control:focus{
+    border-color:#6366F1;
+    box-shadow:0 0 0 3px rgba(99,102,241,.15);
+}
+
+/* ===============================
+   BUTTON
+================================ */
+
+.btn-primary{
+    background:linear-gradient(135deg,#2563EB,#6366F1);
+    border:none;
+    border-radius:12px;
+    transition:.25s;
+}
+
+.btn-primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 15px 30px rgba(99,102,241,.35);
+}
+
+/* ===============================
+   ROLE SELECTION CARDS ⭐
+================================ */
+
+.feature-card{
+    cursor:pointer;
+    border-radius:14px;
+    border:2px solid transparent;
+    transition:.3s ease;
+}
+
+.feature-card:hover{
+    transform:translateY(-6px);
+    border-color:#6366F1;
+    box-shadow:0 15px 30px rgba(99,102,241,.25);
+}
+
+/* Selected state */
+input[type="radio"]:checked + label{
+    color:#2563EB;
+}
+
+/* ===============================
+   FOOTER
+================================ */
+
+footer{
+    margin-top:auto;
+}
+
+/* ===============================
+   RESPONSIVE DESIGN
+================================ */
+
+/* Tablet */
+@media (max-width:992px){
+    .hero{
+        padding:60px 0;
+    }
+}
+
+/* Mobile */
+@media (max-width:768px){
+
+    .card{
+        padding:25px !important;
+    }
+
+    h3{
+        font-size:1.6rem;
+    }
+
+    .hero{
+        align-items:flex-start !important;
+        padding-top:40px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width:480px){
+
+    .container{
+        padding-left:20px;
+        padding-right:20px;
+    }
+
+}
+
+</style>
 <body>
 
 <!-- NAVBAR -->
