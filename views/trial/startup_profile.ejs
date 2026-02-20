@@ -1,78 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nexus - Startup Profile</title>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-<link rel="stylesheet" href="/public/style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus - Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/public/style.css">
 </head>
-
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar bg-white shadow-sm">
-  <div class="container">
-
-    <!-- Logo -->
-    <a class="navbar-brand fw-bold text-primary">Nexus</a>
-
-    <!-- Right Side -->
-    <div class="ms-auto">
-      <button class="btn btn-outline-danger btn-sm">
-        <i class="bi bi-box-arrow-right"></i> Logout
-      </button>
-    </div>
-
-  </div>
-</nav>
-
-
-<!-- PAGE HEADER -->
-<section class="py-5 text-center bg-light">
-  <div class="container">
-    <h2 class="fw-bold">Create Your Startup Profile</h2>
-    <p class="text-muted">
-      Help investors understand your startup through structured information.
-    </p>
-  </div>
-</section>
-
-
-<!-- FORM SECTION -->
-<section class="py-5">
-<div class="container">
-
-<form class="profile-form">
+<form method="POST" action="/startup/profile">
 
 <!-- BASIC INFO -->
 <div class="form-card mb-4">
 <h4 class="mb-3">Basic Information</h4>
 
 <div class="row g-3">
+
 <div class="col-md-6">
 <label class="form-label">Startup Name</label>
-<input type="text" class="form-control" placeholder="Enter startup name">
-</div>
-
-<div class="col-md-6">
-<label class="form-label">Founder Name</label>
-<input type="text" class="form-control" placeholder="Founder full name">
-</div>
-
-<div class="col-md-6">
-<label class="form-label">Email</label>
-<input type="email" class="form-control" placeholder="contact@startup.com">
+<input type="text" name="startupName" class="form-control" required>
 </div>
 
 <div class="col-md-6">
 <label class="form-label">Location</label>
-<input type="text" class="form-control" placeholder="City, Country">
+<input type="text" name="location" class="form-control" required>
 </div>
+
 </div>
 </div>
 
@@ -84,9 +39,9 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.c
 <div class="row g-3">
 
 <div class="col-md-6">
-<label class="form-label">Sector</label>
-<select class="form-select">
-<option selected>Select sector</option>
+<label class="form-label">Industry</label>
+<select name="industry" class="form-select" required>
+<option value="">Select sector</option>
 <option>FinTech</option>
 <option>HealthTech</option>
 <option>EdTech</option>
@@ -97,32 +52,18 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.c
 
 <div class="col-md-6">
 <label class="form-label">Funding Stage</label>
-<select class="form-select">
+<select name="stage" class="form-select" required>
 <option>Idea</option>
 <option>Pre-Seed</option>
 <option>Seed</option>
-<option>Series A</option>
+<option>Early</option>
+<option>Growth</option>
 </select>
 </div>
 
-<!-- DESCRIPTION -->
 <div class="col-12">
 <label class="form-label">Startup Description</label>
-<textarea class="form-control" rows="4"
-placeholder="Describe your startup, problem solved, business model, and target users"></textarea>
-</div>
-
-<!-- DOCUMENT UPLOAD -->
-<div class="col-12">
-<label class="form-label">📄 Upload Pitch Deck / Documents (PDF)</label>
-
-<input type="file"
-class="form-control"
-accept=".pdf,.doc,.docx">
-
-<div class="form-text">
-Upload pitch deck, business plan, or supporting documents (PDF/DOC).
-</div>
+<textarea name="pitchDescription" class="form-control" rows="4" required></textarea>
 </div>
 
 </div>
@@ -137,24 +78,36 @@ Upload pitch deck, business plan, or supporting documents (PDF/DOC).
 
 <div class="col-md-6">
 <label class="form-label">Funding Required (₹)</label>
-<input type="number" class="form-control" placeholder="e.g. 5000000">
+<input type="number" name="fundingRequired" class="form-control" required>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Equity Offered (%)</label>
+<input type="number" name="equityOffered" class="form-control">
 </div>
 
 <div class="col-md-6">
 <label class="form-label">Team Size</label>
-<input type="number" class="form-control" placeholder="Number of members">
+<input type="number" name="teamSize" class="form-control">
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Revenue Status</label>
+<select name="revenueStatus" class="form-select">
+<option>Pre-Revenue</option>
+<option>Revenue Generating</option>
+<option>Profitable</option>
+</select>
 </div>
 
 <div class="col-12">
-<label class="form-label">Website / Pitch Deck Link</label>
-<input type="url" class="form-control" placeholder="https://">
+<label class="form-label">Tags (comma separated)</label>
+<input type="text" name="tags" class="form-control">
 </div>
 
 </div>
 </div>
 
-
-<!-- SUBMIT -->
 <div class="text-center">
 <button class="btn btn-primary btn-lg px-5">
 Save Profile
@@ -162,50 +115,5 @@ Save Profile
 </div>
 
 </form>
-
-</div>
-</section>
-
-<footer class="bg-dark text-white mt-5">
-  <div class="container text-center py-4">
-
-    <h5 class="fw-bold mb-2">Nexus</h5>
-
-    <p class="text-secondary">
-      Intelligent Startup–Investor Matchmaking Platform
-    </p>
-
-    <!-- SOCIAL ICONS -->
-    <div class="social-icons my-3 space-x-3">
-
-      <a href="#" class="social-link">
-        <i class="bi bi-instagram"></i>
-      </a>
-
-      <a href="#" class="social-link">
-        <i class="bi bi-facebook"></i>
-      </a>
-
-      <a href="#" class="social-link">
-        <i class="bi bi-youtube"></i>
-      </a>
-
-      <a href="#" class="social-link">
-        <i class="bi bi-twitter-x"></i>
-      </a>
-
-      <a href="#" class="social-link">
-        <i class="bi bi-linkedin"></i>
-      </a>
-
-    </div>
-
-    <small class="text-secondary">
-      © 2026 Nexus — Startup India Initiative Hackathon Prototype | All rights reserved.
-    </small>
-
-  </div>
-</footer>
-
 </body>
 </html>
