@@ -1,0 +1,47 @@
+.hero {
+    min-height: 85vh;
+    background: #f8fafc;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.btn-primary {
+    background-color: #2563EB;
+    border: none;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f8fafc;
+}
+
+/* HERO */
+.hero {
+    min-height: 85vh;
+    background: linear-gradient(135deg, #f8fafc, #809cf7);
+}
+
+.hero-img {
+    max-width: 420px;
+}
+
+/* CARDS */
+.feature-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* BUTTON */
+.btn-primary {
+    background-color: #2563EB;
+    border: none;
+}
