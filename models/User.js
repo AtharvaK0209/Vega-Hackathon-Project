@@ -16,10 +16,10 @@ const UserSchema = new mongoose.Schema(
       enum: ["startup", "investor", "admin"],
       required: true,
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
+    // isVerified: {
+    //   type: Boolean,
+    //   default: false,
+    // },
   },
   { timestamps: true },
 );

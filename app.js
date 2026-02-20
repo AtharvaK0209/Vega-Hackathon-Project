@@ -5,6 +5,7 @@ const mongoose=require("mongoose");
 const path=require("path");
 const ejsmate=require("ejs-mate");
 const session=require("express-session");
+const User=require("./models/User");
 
 
 
@@ -24,7 +25,25 @@ async function main(){
 
 
 app.get("/",(req,res)=>{
-    res.send("Hi i am root");
+    res.render("layout/index");
+});
+
+app.get("/signup",(req,res)=>{
+    res.render("trial/signup");
+});
+app.post("/signup",async (req,res)=>{
+    let {name,email,password,role}=req.body;
+    let newuser=new User({email,name,role});
+    let register=await User.register(newuser,password);
+    console.log(register);
+    res.send("User registerd");
+
+
+
+})
+
+app.get("/login",(req,res)=>{
+    res.render("trial/login");
 });
 
 
