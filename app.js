@@ -141,7 +141,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 async function getAIBasedMatches(startup, investors) {
     // 1. Initialize the model correctly
     const model = genAI.getGenerativeModel({ 
-        model: "gemini-2.5-flash-lite",
+        model: "gemini-2.5-flash",
         // This forces the model to strictly output a JSON object
         generationConfig: { responseMimeType: "application/json" } 
     });
@@ -179,7 +179,7 @@ async function getAIBasedMatches(startup, investors) {
 async function getAIBasedMatchesForInvestor(investor, startups) {
     try {
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-2.5-flash-lite",
+            model: "gemini-2.5-flash",
             generationConfig: { responseMimeType: "application/json" }
         });
 

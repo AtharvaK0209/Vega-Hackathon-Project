@@ -83,30 +83,56 @@ body{
    INPUTS
 ================================ */
 
-.form-control{
-    border-radius:12px;
-    padding:12px;
+/* --- Nexus Form Element Styles --- */
+
+.form-label {
+    font-weight: 600;
+    color: #374151; /* Darker gray for readability */
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
 }
 
-.form-control:focus{
-    border-color:#6366F1;
-    box-shadow:0 0 0 3px rgba(99,102,241,0.15);
+.form-control {
+    border-radius: 12px; /* Smooth rounded corners */
+    padding: 12px 16px;
+    border: 1px solid #D1D5DB;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: all 0.2s ease-in-out;
 }
 
-/* ===============================
-   BUTTON
-================================ */
-
-.btn-primary{
-    background:linear-gradient(135deg,#2563EB,#6366F1);
-    border:none;
-    border-radius:12px;
-    transition:.25s;
+/* Focus state with the signature Nexus purple/blue glow */
+.form-control:focus {
+    background-color: #fff;
+    border-color: #6366F1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+    outline: none;
 }
 
-.btn-primary:hover{
-    transform:translateY(-2px);
-    box-shadow:0 12px 24px rgba(99,102,241,.3);
+/* The Nexus Gradient Button */
+.btn-primary {
+    background: linear-gradient(135deg, #2563EB, #6366F1);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+    background: linear-gradient(135deg, #1D4ED8, #4F46E5);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Placeholder styling */
+.form-control::placeholder {
+    color: #9CA3AF;
+    font-size: 0.9rem;
 }
 
 /* ===============================
@@ -177,30 +203,24 @@ footer{
 <section class="hero d-flex align-items-center justify-content-center">
   <div class="container">
     <div class="row justify-content-center">
-
       <div class="col-md-5">
-        <div class="card p-4 shadow-lg">
+        <div class="card p-4 shadow-lg border-0" style="border-radius: 15px;">
 
           <h3 class="text-center fw-bold mb-4">Welcome Back</h3>
 
-          <!-- FLASH MESSAGES -->
           <% if (error && error.length > 0) { %>
-            <div class="alert alert-danger text-center">
+            <div class="alert alert-danger text-center py-2 mb-3">
               <%= error %>
-          <% } %>
-          </div>
-
-          <% if (success && success.length > 0) { %>
-            <div class="alert alert-success text-center">
+            </div>
+          <% } %> <% if (success && success.length > 0) { %>
+            <div class="alert alert-success text-center py-2 mb-3">
               <%= success %>
             </div>
           <% } %>
 
-          <!-- LOGIN FORM -->
           <form action="/login" method="POST">
-
             <div class="mb-3">
-              <label class="form-label">Username</label>
+              <label class="form-label fw-semibold">Username</label>
               <input type="text"
                      name="username"
                      class="form-control"
@@ -209,7 +229,7 @@ footer{
             </div>
 
             <div class="mb-3">
-              <label class="form-label">Password</label>
+              <label class="form-label fw-semibold">Password</label>
               <input type="password"
                      name="password"
                      class="form-control"
@@ -218,23 +238,21 @@ footer{
             </div>
 
             <div class="d-grid mt-4">
-              <button type="submit" class="btn btn-primary btn-lg">
+              <button type="submit" class="btn btn-primary btn-lg shadow-sm">
                 Login
               </button>
             </div>
-
           </form>
 
-          <div class="text-center mt-3">
+          <div class="text-center mt-4">
             <small class="text-muted">
               Don't have an account?
-              <a href="/signup" class="text-primary fw-semibold">Sign Up</a>
+              <a href="/signup" class="text-primary fw-semibold text-decoration-none">Sign Up</a>
             </small>
           </div>
 
         </div>
       </div>
-
     </div>
   </div>
 </section>
