@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nexus | Startup Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<nav class="navbar navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-primary" href="/">Nexus</a>
+  </div>
+</nav>
+
+<section class="py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+
+        <div class="card p-4 shadow-sm">
+          <h3 class="fw-bold mb-4 text-center">Startup Profile</h3>
+
+          <form action="/startup/register" method="POST">
+
+            <div class="mb-3">
+              <label class="form-label">Startup Name</label>
+              <input type="text" name="name" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Industry</label>
+              <input type="text" name="industry" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Funding Stage</label>
+              <select name="stage" class="form-select">
+                <option value="Idea">Idea Stage</option>
+                <option value="Seed">Seed</option>
+                <option value="Series A">Series A</option>
+                <option value="Series B+">Series B+</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Funding Required (₹)</label>
+              <input type="number" name="fundingRequired" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Short Description</label>
+              <textarea name="description" class="form-control" rows="3" required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+              Create Startup Profile
+            </button>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
