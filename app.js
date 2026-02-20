@@ -221,14 +221,23 @@ app.get("/startup/profile", isLoggedIn, (req, res) => {
   // Prevent re-filling if already done
   if (req.user.hasFilledProfile) return res.redirect("/startup/dashboard");
 
-  res.render("trial/startup_profile");
+  res.render("trial/startup_profile", { startup: {} });
+});
+
+app.get("/startup/profile/edit", isLoggedIn, async (req, res) => {
+    if (req.user.role !== "startup") return res.redirect("/");
+    
+    const startup = await Startup.findOne({ userId: req.user._id });
+    if (!startup) return res.redirect("/startup/profile");
+    
+    res.render("trial/startup_profile", { startup });
 });
 
 app.post("/startup/profile", isLoggedIn, async (req, res) => {
   if (req.user.role !== "startup") return res.redirect("/");
 
   try {
-    const newStartup = new Startup({
+    const startupData = {
       userId: req.user._id,
       startupName: req.body.startupName,
       industry: req.body.industry,
@@ -240,14 +249,23 @@ app.post("/startup/profile", isLoggedIn, async (req, res) => {
       teamSize: req.body.teamSize,
       pitchDescription: req.body.pitchDescription,
       tags: req.body.tags ? req.body.tags.split(",") : [],
-    });
+    };
 
-    await newStartup.save();
+    // Check if startup profile already exists for this user
+    let startup = await Startup.findOne({ userId: req.user._id });
 
-    // IMPORTANT: Mark profile as filled
-    await User.findByIdAndUpdate(req.user._id, { hasFilledProfile: true });
+    if (startup) {
+        // Update existing profile
+        await Startup.findOneAndUpdate({ userId: req.user._id }, startupData);
+        req.flash("success", "Profile updated successfully!");
+    } else {
+        // Create new profile
+        startup = new Startup(startupData);
+        await startup.save();
+        await User.findByIdAndUpdate(req.user._id, { hasFilledProfile: true });
+        req.flash("success", "Profile created successfully!");
+    }
 
-    req.flash("success", "Profile created successfully!");
     res.redirect("/startup/dashboard");
   } catch (err) {
     req.flash("error", err.message);
@@ -270,44 +288,49 @@ app.get("/investor/profile", isLoggedIn, (req, res) => {
   if (req.user.role !== "investor") return res.redirect("/");
   if (req.user.hasFilledProfile) return res.redirect("/investor/dashboard");
 
-  res.render("trial/investor_profile");
+  res.render("trial/investor_profile", { investor: {} });
+});
+
+app.get("/investor/profile/edit", isLoggedIn, async (req, res) => {
+    if (req.user.role !== "investor") return res.redirect("/");
+    
+    const investor = await Investor.findOne({ userId: req.user._id });
+    if (!investor) return res.redirect("/investor/profile");
+    
+    res.render("trial/investor_profile", { investor });
 });
 
 app.post("/investor/profile", isLoggedIn, async (req, res) => {
   try {
-    const {
-      investorName,
-      organization,
-      investorEmail,
-      locationPreference,
-      minInvestment,
-      maxInvestment,
-      preferredStage,
-      investmentType,
-      sectors, // The array of checkboxes
-      additionalNotes,
-    } = req.body;
-
-    const newInvestor = new Investor({
+    const investorData = {
       userId: req.user._id,
-      investorName,
-      firmName: organization,
-      email: investorEmail,
-      locationPreference,
-      minInvestment: Number(minInvestment),
-      maxInvestment: Number(maxInvestment),
-      preferredStage,
-      investmentType,
-      preferredIndustries: sectors || [],
-      bio: additionalNotes,
-    });
+      investorName: req.body.investorName,
+      firmName: req.body.organization,
+      email: req.body.investorEmail,
+      locationPreference: req.body.locationPreference,
+      minInvestment: Number(req.body.minInvestment),
+      maxInvestment: Number(req.body.maxInvestment),
+      preferredStage: req.body.preferredStage,
+      investmentType: req.body.investmentType,
+      preferredIndustries: req.body.sectors || [],
+      bio: req.body.additionalNotes,
+    };
 
-    await newInvestor.save();
+    // Check if investor profile already exists
+    let investor = await Investor.findOne({ userId: req.user._id });
 
-    // Mark user as having completed the profile
-    await User.findByIdAndUpdate(req.user._id, { hasFilledProfile: true });
+    if (investor) {
+        // Update
+        await Investor.findOneAndUpdate({ userId: req.user._id }, investorData);
+        req.flash("success", "Preferences updated successfully!");
+    } else {
+        // Create
+        investor = new Investor(investorData);
+        await investor.save();
+        await User.findByIdAndUpdate(req.user._id, { hasFilledProfile: true });
+        req.flash("success", "Investor profile completed!");
+    }
 
-    req.flash("success", "Investor profile completed!");
     res.redirect("/investor/dashboard");
   } catch (err) {
     req.flash("error", err.message);
