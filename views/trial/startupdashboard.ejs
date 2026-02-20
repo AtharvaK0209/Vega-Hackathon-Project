@@ -15,7 +15,7 @@
 
 <div class="container py-5">
 
-    <h2 class="mb-4">Welcome, <%= startup.name %> 🚀</h2>
+    <h2 class="mb-4">Welcome, <%= startup.startupName %> 🚀</h2>
 
     <div class="row">
 
@@ -31,14 +31,14 @@
         <div class="col-md-6">
             <div class="card p-4 shadow-sm mb-4">
                 <h5>Quick Actions</h5>
-                <a href="/matches/<%= startup._id %>" 
+                <a href="/startup/matches" 
                    class="btn btn-primary w-100 mb-2">
                    View Matches
                 </a>
 
-                <button class="btn btn-outline-secondary w-100">
+                <a href="/startup/profile/edit" class="btn btn-outline-secondary w-100">
                     Edit Profile
-                </button>
+                </a>
             </div>
         </div>
 
