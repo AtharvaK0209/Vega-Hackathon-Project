@@ -1,4 +1,9 @@
 {
+  "name": "nexus-platform",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node app.js"
+  },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "connect-flash": "^0.1.1",
