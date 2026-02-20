@@ -51,19 +51,19 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.c
         <div class="row g-3">
             <div class="col-md-6">
                 <label class="form-label">Investor Name</label>
-                <input type="text" name="investorName" class="form-control" placeholder="Full name" value="<%= investor.investorName || '' %>" required>
+                <input type="text" name="investorName" class="form-control" placeholder="Full name" required>
             </div>
             <div class="col-md-6">
                 <label class="form-label">Organization / Firm</label>
-                <input type="text" name="organization" class="form-control" placeholder="Company or VC firm" value="<%= investor.firmName || '' %>">
+                <input type="text" name="firmName" class="form-control" placeholder="Company or VC firm">
             </div>
             <div class="col-md-6">
                 <label class="form-label">Email</label>
-                <input type="email" name="investorEmail" class="form-control" placeholder="investor@email.com" value="<%= investor.email || '' %>">
+                <input type="email" name="email" class="form-control" placeholder="investor@email.com">
             </div>
             <div class="col-md-6">
                 <label class="form-label">Location Preference</label>
-                <input type="text" name="locationPreference" class="form-control" placeholder="India / Global / City" value="<%= investor.locationPreference || '' %>">
+                <input type="text" name="locationPreference" class="form-control" placeholder="India / Global / City">
             </div>
         </div>
     </div>
@@ -73,28 +73,29 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.c
         <div class="row g-3">
             <div class="col-md-6">
                 <label class="form-label">Minimum Investment (₹)</label>
-                <input type="number" name="minInvestment" class="form-control" placeholder="e.g. 1000000" value="<%= investor.minInvestment || '' %>" required>
+                <input type="number" name="minInvestment" class="form-control" placeholder="e.g. 1000000" required>
             </div>
             <div class="col-md-6">
                 <label class="form-label">Maximum Investment (₹)</label>
-                <input type="number" name="maxInvestment" class="form-control" placeholder="e.g. 50000000" value="<%= investor.maxInvestment || '' %>" required>
+                <input type="number" name="maxInvestment" class="form-control" placeholder="e.g. 50000000" required>
             </div>
             <div class="col-md-6">
                 <label class="form-label">Preferred Startup Stage</label>
                 <select name="preferredStage" class="form-select">
-                    <% const stages = ["Idea", "Pre-Seed", "Seed", "Series A", "Growth Stage"]; %>
-                    <% stages.forEach(stg => { %>
-                        <option value="<%= stg %>" <%= (investor.preferredStage === stg) ? 'selected' : '' %>><%= stg %></option>
-                    <% }) %>
+                    <option value="Idea">Idea</option>
+                    <option value="Pre-Seed">Pre-Seed</option>
+                    <option value="Seed">Seed</option>
+                    <option value="Series A">Series A</option>
+                    <option value="Growth Stage">Growth Stage</option>
                 </select>
             </div>
             <div class="col-md-6">
                 <label class="form-label">Investment Type</label>
                 <select name="investmentType" class="form-select">
-                    <% const types = ["Equity", "Debt", "Convertible Note", "Any"]; %>
-                    <% types.forEach(type => { %>
-                        <option value="<%= type %>" <%= (investor.investmentType === type) ? 'selected' : '' %>><%= type %></option>
-                    <% }) %>
+                    <option value="Equity">Equity</option>
+                    <option value="Debt">Debt</option>
+                    <option value="Convertible Note">Convertible Note</option>
+                    <option value="Any">Any</option>
                 </select>
             </div>
         </div>
@@ -103,28 +104,40 @@ href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.c
     <div class="form-card mb-4">
         <h4 class="mb-3">Sector Interests</h4>
         <div class="row">
-            <% const sectors = ["FinTech", "HealthTech", "EdTech", "AI / ML"]; %>
-            <% const currentSectors = investor.preferredIndustries || []; %>
-            <% sectors.forEach(sector => { %>
-                <div class="col-md-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="sectors" value="<%= sector %>" <%= currentSectors.includes(sector) ? 'checked' : '' %>>
-                        <label class="form-check-label"><%= sector %></label>
-                    </div>
+            <div class="col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="preferredIndustries" value="FinTech">
+                    <label class="form-check-label">FinTech</label>
                 </div>
-            <% }) %>
+            </div>
+            <div class="col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="preferredIndustries" value="HealthTech">
+                    <label class="form-check-label">HealthTech</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="preferredIndustries" value="EdTech">
+                    <label class="form-check-label">EdTech</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="preferredIndustries" value="AI / ML">
+                    <label class="form-check-label">AI / ML</label>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="form-card mb-4">
         <h4 class="mb-3">Additional Notes</h4>
-        <textarea name="additionalNotes" class="form-control" rows="4" placeholder="Mention special investment interests..."><%= investor.bio || '' %></textarea>
+        <textarea name="bio" class="form-control" rows="4" placeholder="Mention special investment interests..."></textarea>
     </div>
 
     <div class="text-center">
-        <button type="submit" class="btn btn-primary btn-lg px-5">
-            <%= investor.investorName ? 'Update Preferences' : 'Save Preferences' %>
-        </button>
+        <button type="submit" class="btn btn-primary btn-lg px-5">Save Preferences</button>
     </div>
 </form>
 
