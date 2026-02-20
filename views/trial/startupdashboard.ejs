@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Startup Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-primary">
+  <div class="container">
+    <span class="navbar-brand">Startup Dashboard</span>
+    <a href="/" class="btn btn-light btn-sm">Logout</a>
+  </div>
+</nav>
+
+<div class="container py-5">
+
+    <h2 class="mb-4">Welcome, <%= startup.name %> 🚀</h2>
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm mb-4">
+                <h5>Your Startup Details</h5>
+                <p><strong>Industry:</strong> <%= startup.industry %></p>
+                <p><strong>Stage:</strong> <%= startup.stage %></p>
+                <p><strong>Funding Required:</strong> ₹<%= startup.fundingRequired %></p>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card p-4 shadow-sm mb-4">
+                <h5>Quick Actions</h5>
+                <a href="/matches/<%= startup._id %>" 
+                   class="btn btn-primary w-100 mb-2">
+                   View Matches
+                </a>
+
+                <button class="btn btn-outline-secondary w-100">
+                    Edit Profile
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
