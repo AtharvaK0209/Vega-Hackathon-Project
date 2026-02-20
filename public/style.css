@@ -45,3 +45,159 @@ body {
     background-color: #2563EB;
     border: none;
 }
+
+/* ===== FORM CARDS ===== */
+
+.form-card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.form-card:hover {
+    border-color: #2563EB;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+/* inputs */
+.form-control,
+.form-select {
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* focus effect */
+.form-control:focus,
+.form-select:focus {
+    border-color: #2563EB;
+    box-shadow: 0 0 0 0.15rem rgba(37,99,235,0.2);
+}
+
+/* FILE INPUT STYLING */
+input[type="file"] {
+    padding: 10px;
+    cursor: pointer;
+}
+
+input[type="file"]:hover {
+    border-color: #2563EB;
+}
+
+/* ===== SOCIAL ICONS ===== */
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+}
+
+.social-link {
+    font-size: 22px;
+    color: #cbd5e1;
+    transition: all 0.3s ease;
+}
+
+.social-link:hover {
+    color: #2563EB;
+    transform: translateY(-4px) scale(1.15);
+}
+
+footer {
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ===== MATCH CARDS ===== */
+
+.match-card {
+    width: 300px;
+    min-height: 260px;
+    padding: 22px;
+    background: white;
+
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+
+    transition: all 0.35s ease;
+}
+
+.match-card:hover {
+    transform: translateY(-10px);
+    border-color: #2563EB;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+}
+
+/* MATCH SCORE BADGE */
+
+.match-score {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.match-score.high {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.match-score.medium {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.match-score.low {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.match-info p {
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+/* ===== CONNECTION CARDS ===== */
+
+.connection-card {
+    width: 380px;
+    min-height: 180px;
+    padding: 22px;
+    background: white;
+
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+
+    transition: all 0.3s ease;
+}
+
+.connection-card:hover {
+    transform: translateY(-8px);
+    border-color: #2563EB;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+/* STATUS BADGES */
+
+.status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status.accepted {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+

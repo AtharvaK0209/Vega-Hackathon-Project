@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investor Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+    
+<!-- NAVBAR -->
+<nav class="navbar bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-primary">Nexus</a>
+  </div>
+</nav>
+
+
+<!-- HEADER -->
+<section class="py-5 text-center bg-light">
+  <div class="container">
+    <h2 class="fw-bold">Investor Preference Setup</h2>
+    <p class="text-muted">
+      Define your investment interests to discover aligned startups.
+    </p>
+  </div>
+</section>
+
+
+<!-- FORM -->
+<section class="py-5">
+<div class="container">
+
+<form>
+
+<!-- INVESTOR INFO -->
+<div class="form-card mb-4">
+<h4 class="mb-3">Investor Information</h4>
+
+<div class="row g-3">
+
+<div class="col-md-6">
+<label class="form-label">Investor Name</label>
+<input type="text" class="form-control" placeholder="Full name">
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Organization / Firm</label>
+<input type="text" class="form-control" placeholder="Company or VC firm">
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Email</label>
+<input type="email" class="form-control" placeholder="investor@email.com">
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Location Preference</label>
+<input type="text" class="form-control" placeholder="India / Global / City">
+</div>
+
+</div>
+</div>
+
+
+<!-- INVESTMENT PREFERENCES -->
+<div class="form-card mb-4">
+<h4 class="mb-3">Investment Preferences</h4>
+
+<div class="row g-3">
+
+<div class="col-md-6">
+<label class="form-label">Minimum Investment (₹)</label>
+<input type="number" class="form-control" placeholder="e.g. 1000000">
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Maximum Investment (₹)</label>
+<input type="number" class="form-control" placeholder="e.g. 50000000">
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Preferred Startup Stage</label>
+<select class="form-select">
+<option>Idea</option>
+<option>Pre-Seed</option>
+<option>Seed</option>
+<option>Series A</option>
+<option>Growth Stage</option>
+</select>
+</div>
+
+<div class="col-md-6">
+<label class="form-label">Investment Type</label>
+<select class="form-select">
+<option>Equity</option>
+<option>Debt</option>
+<option>Convertible Note</option>
+<option>Any</option>
+</select>
+</div>
+
+</div>
+</div>
+
+
+<!-- SECTOR INTEREST -->
+<div class="form-card mb-4">
+<h4 class="mb-3">Sector Interests</h4>
+
+<div class="row">
+
+<div class="col-md-3">
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">FinTech</label>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">HealthTech</label>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">EdTech</label>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">AI / ML</label>
+</div>
+</div>
+
+<div class="col-md-3 mt-2">
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">SaaS</label>
+</div>
+</div>
+
+<div class="col-md-3 mt-2">
+<div class="form-check">
+<input class="form-check-input" type="checkbox">
+<label class="form-check-label">ClimateTech</label>
+</div>
+</div>
+
+</div>
+</div>
+
+
+<!-- ADDITIONAL NOTES -->
+<div class="form-card mb-4">
+<h4 class="mb-3">Additional Notes</h4>
+
+<textarea class="form-control" rows="4"
+placeholder="Mention special investment interests or expectations"></textarea>
+
+</div>
+
+
+<!-- SUBMIT -->
+<div class="text-center">
+<button class="btn btn-primary btn-lg px-5">
+Save Preferences
+</button>
+</div>
+
+</form>
+
+</div>
+</section>
+
+
+<!-- FOOTER -->
+<footer class="bg-dark text-white mt-5">
+  <div class="container text-center py-4">
+
+    <h5 class="fw-bold">Nexus</h5>
+
+    <p class="text-secondary">
+      Intelligent Startup–Investor Matchmaking Platform
+    </p>
+
+    <div class="social-icons my-3">
+      <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+      <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+      <a href="#" class="social-link"><i class="bi bi-youtube"></i></a>
+      <a href="#" class="social-link"><i class="bi bi-twitter-x"></i></a>
+      <a href="#" class="social-link"><i class="bi bi-linkedin"></i></a>
+    </div>
+
+    <small class="text-secondary">
+      © 2026 Nexus — Startup India Initiative Hackathon Prototype | All rights reserved.
+    </small>
+
+  </div>
+</footer>
+
+</body>
+</html>
