@@ -199,9 +199,7 @@ async function getAIBasedMatchesForInvestor(investor, startups) {
           {
             "startupId": "string",
             "score": number (0-100),
-            "reasoning": "A concise explanation of the investment fit",
-            "pros": "Why this is a good investment choice",
-            "cons": "Potential risks or concerns"
+            "reasoning": "A concise explanation of the investment fit"
           }
         ]
         `;
@@ -369,9 +367,7 @@ app.get("/investor/dashboard", isLoggedIn, async (req, res) => {
             return {
                 startup: startupData,
                 score: match.score,
-                reasoning: match.reasoning,
-                pros: match.pros,
-                cons: match.cons
+                reasoning: match.reasoning
             };
         });
 
@@ -445,9 +441,7 @@ app.get("/investor/matches/:investorId", isLoggedIn, async (req, res) => {
             return {
                 startup: startupData,
                 score: match.score,
-                reasoning: match.reasoning,
-                pros: match.pros,
-                cons: match.cons
+                reasoning: match.reasoning
             };
         });
 
