@@ -11,6 +11,7 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const flash = require("connect-flash");
+const Store=session.Store
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 const User = require("./models/User");
@@ -27,22 +28,104 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
 // ================= DATABASE =================
-mongoose.set("strictQuery", false);
-mongoose
-  .connect("mongodb://127.0.0.1:27017/nexus")
-  .then(() => console.log("MongoDB Connected"))
-  .catch((err) => console.log(err));
+const sessionSchema=new mongoose.Schema({
+  _id:String,
+  session:Object,
+  expires:Date,
+});
+const Session= mongoose.model("Session",sessionSchema);
 
-// ================= SESSION =================
-app.use(
-  session({
-    secret: process.env.SECRET || "supersecret",
-    resave: false,
-    saveUninitialized: false,
-  }),
-);
+sessionSchema.index({expires:1},{expireAfterSeconds:0});
+const dbURL=process.env.ATLAS_URL;
+console.log(dbURL);
+
+// Database Connectivity
+main().then(()=>{
+  console.log("Connected to database");
+}).catch((err)=>{console.log(err)});
+
+
+async function main(){
+  await mongoose.connect(dbURL,{
+    useNewUrlParser: true,
+  useUnifiedTopology: true,
+  }).then(()=>console.log("Mongostore connect")).catch((err)=>console.log("Mongostore err:",err));
+
+};
+
+class MongooseStore extends Store {
+  constructor(options={}) {
+    super();
+    this.ttl = options.ttl || 30 * 24 * 60 * 60;
+  }
+
+  async get(sid, callback) {
+    try {
+      const doc = await Session.findById(sid);
+      callback(null, doc ? doc.session : null);
+    } catch (err) {
+      callback(err);
+    }
+  }
+
+  async set(sid, sessionData, callback) {
+    try {
+      await Session.findByIdAndUpdate(
+        sid,
+        { session: sessionData, expires: sessionData.cookie?.expires },
+        { upsert: true }
+      );
+      callback(null);
+    } catch (err) {
+      callback(err);
+    }
+  }
+
+  async destroy(sid, callback) {
+    try {
+      await Session.findByIdAndDelete(sid);
+      callback(null);
+    } catch (err) {
+      callback(err);
+    }
+  }
+
+    async touch(sid, sessionData, callback) {
+    try {
+      const expires =
+        sessionData.cookie?.expires ||
+        new Date(Date.now() + this.ttl * 1000);
+
+      await Session.findByIdAndUpdate(
+        sid,
+        { expires },
+        { new: false }
+      );
+
+      callback(null);
+    } catch (err) {
+      callback(err);
+    }
+  }
+
+};
+
+
+//Session Passport & Falsh Message middleware
+const sessionOptions={
+  secret:process.env.SECRET,
+  resave:false,
+  saveUninitialized:false,
+  store:new MongooseStore({ttl:30*24*60*60}),
+  cookie:{
+    expires:Date.now()+7*24*60*60*1000,
+    maxAge:30*24*60*60*1000,
+    httpOnly:true,
+  }
+}
 
 // ================= PASSPORT =================
+app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
